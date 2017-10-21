@@ -19,9 +19,9 @@ for ($i = 0; $i < 1000; $i++) {
     $payload = ["s" => "string ".$i, "b" => (bool)($i % 2), "i" => $i, "f" => $i / 10];
     $request = make_request($payload, API_SECRET);
 
-    #assert(parse_request($request, API_SECRET) === $payload); // original
-    #assert(parse_request(strrev($request), API_SECRET) === false); // reverse
-    #assert(parse_request(substr($request, 1, -1), API_SECRET) === false); // shortened
+    assert(parse_request($request, API_SECRET) === $payload); // original
+    assert(parse_request(strrev($request), API_SECRET) === false); // reverse
+    assert(parse_request(substr($request, 1, -1), API_SECRET) === false); // shortened
 }
 
 
