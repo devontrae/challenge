@@ -2,24 +2,6 @@
 // YOUR NAME AND EMAIL GO HERE
 // Devontrae Walls / devontrae@gmail.com
 
-  /*function make_request($payload, $secret)
-  {
-      $payload   = json_encode($payload);
-      $signature = hash_hmac('sha256', $payload, $secret);
-      $request   = base64_encode($signature).'.'.base64_encode($payload);
-
-      return strtr($request, '+/', '-_');
-  }
-
-  for ($i = 0; $i < $iterations; $i++) {
-      $payload = ["s" => "string ".$i, "b" => (bool)($i % 2), "i" => $i, "f" => $i / 10];
-      $request = make_request($payload, API_SECRET);
-
-      assert(parse_request($request, API_SECRET) === $payload); // original
-      assert(parse_request(strrev($request), API_SECRET) === false); // reverse
-      assert(parse_request(substr($request, 1, -1), API_SECRET) === false); // shortened
-  }
-*/
 function parse_request($request, $secret)
 {
     // YOUR CODE GOES HERE
@@ -49,11 +31,32 @@ function parse_request($request, $secret)
 function dates_with_at_least_n_scores($pdo, $n)
 {
     // YOUR CODE GOES HERE
+    # Lets begin with a query, where we select all dates
+    # Then we'll group them
+    # And we'll only return the dates having n count of scores
+    # Then we'll order dates to the most recent
+    $sql = '  SELECT `date`
+              FROM scores
+              GROUP BY `date`
+              HAVING COUNT (*) >= '.$n.'
+              ORDER BY `date` DESC
+          ';
+    $handle = $pdo->prepare($sql);
+    $handle->execute();
+    $result = $handle->fetchAll(PDO::FETCH_ASSOC);
+    $return_arr = array();
+    foreach($result as $return_this) {
+      $return_arr[] = $return_this['date'];
+    }
+    print_r($return_arr);
+    return $return_arr;
+
 }
 
 function users_with_top_score_on_date($pdo, $date)
 {
     // YOUR CODE GOES HERE
+  
 }
 
 function dates_when_user_was_in_top_n($pdo, $user_id, $n)

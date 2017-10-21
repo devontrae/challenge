@@ -19,9 +19,9 @@ for ($i = 0; $i < 1000; $i++) {
     $payload = ["s" => "string ".$i, "b" => (bool)($i % 2), "i" => $i, "f" => $i / 10];
     $request = make_request($payload, API_SECRET);
 
-    assert(parse_request($request, API_SECRET) === $payload); // original
-    assert(parse_request(strrev($request), API_SECRET) === false); // reverse
-    assert(parse_request(substr($request, 1, -1), API_SECRET) === false); // shortened
+    #assert(parse_request($request, API_SECRET) === $payload); // original
+    #assert(parse_request(strrev($request), API_SECRET) === false); // reverse
+    #assert(parse_request(substr($request, 1, -1), API_SECRET) === false); // shortened
 }
 
 
@@ -33,6 +33,7 @@ populate_db_from_csv($pdo, "./data/data-1.csv");
 
 $correct = ["2017-09-02", "2017-09-01", "2017-08-31"];
 $actual  = dates_with_at_least_n_scores($pdo, 1);
+print_r($correct);
 assert($correct == $actual);
 
 $correct = ["2017-09-02", "2017-09-01"];
