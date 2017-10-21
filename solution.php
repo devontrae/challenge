@@ -19,10 +19,8 @@ function parse_request($request, $secret)
     if($signature == $req_signature) {
       # Great, our request signature and our new signature given the secret given match!
       # Lets return the payload
-      echo "signatures match!\n";
       return json_decode($req_payload, true);
     } else {
-      echo "signatures do not match!\n";
       return false;
     }
 
@@ -35,6 +33,7 @@ function dates_with_at_least_n_scores($pdo, $n)
     # Then we'll group them
     # And we'll only return the dates having n count of scores
     # Then we'll order dates to the most recent
+
     $sql = '  SELECT `date`
               FROM scores
               GROUP BY `date`
@@ -45,18 +44,42 @@ function dates_with_at_least_n_scores($pdo, $n)
     $handle->execute();
     $result = $handle->fetchAll(PDO::FETCH_ASSOC);
     $return_arr = array();
+
     foreach($result as $return_this) {
       $return_arr[] = $return_this['date'];
     }
-    print_r($return_arr);
-    return $return_arr;
 
+    return $return_arr;
 }
 
 function users_with_top_score_on_date($pdo, $date)
 {
     // YOUR CODE GOES HERE
-  
+    # Lets get all scores from this date
+    $sql = '  SELECT *
+              FROM scores
+              WHERE `date` = ?
+          ';
+    $handle = $pdo->prepare($sql);
+    $handle->execute(array($date));
+    $result = $handle->fetchAll(PDO::FETCH_ASSOC);
+    $return_arr = array();
+    $highest_score = 0;
+
+    foreach($result as $return_this) {
+      # Lets log the highest score
+      if($return_this['score'] > $highest_score)
+        $highest_score = $return_this['score'];
+    }
+
+    # Lets grab the rows with the highest score
+    foreach($result as $return_this) {
+      if($return_this['score'] == $highest_score) {
+        $return_arr[] = $return_this['user_id'];
+      }
+    }
+
+    return $return_arr;
 }
 
 function dates_when_user_was_in_top_n($pdo, $user_id, $n)
